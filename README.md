@@ -1,6 +1,6 @@
-# FITNESS TRACKING SYSTEM
+# FITNESS TRACKING AND WORKOUT MANAGEMENT SYSTEM
 
-Final Project DAMG 6210 - DMDD course
+Final Project DAMG 6210 - DMDD course- GROUP 7
 
 Group Members:
 1. Aseem Deshmukh
