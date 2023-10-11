@@ -23,3 +23,27 @@ The system plans to provide following features:
 4.	Provide a progress report of weight loss/gain, BMI etc.
 5.	Provide customized diet plan to achieve the fitness goals.
 6.	Provide a space for sharing the fitness journey and achievements and interacting with fellow fitness enthusiasts.
+
+**Entities**
+1. User:
+Attributes: UserID, name, gender,age,email_id,password
+3. Fitness goals:
+Attributes: GoalID, description,target_date,target_calories
+4. Community:
+Attributes: Community_ID, posts, content, post_date
+5. Progress Report:
+Attributes: Report_ID, date, weight, height, body_fat_percentage
+6. Diet Plan:
+Attributes: PlanID, Planname, PlanDescription, nutrientvalue
+7. Meal Plan
+Attributes: MealID, date, time, total_calories
+8. Workout Info:
+Attributes: weights, sets, repetitions
+9. Exercise:
+Attributes: ExerciseID, name, description
+10. Group Activity:
+Attributes: ActivityID, name, description, category
+11. Daily Workout:
+Attributes: PlanID, name, description
+12. Workout session:
+Attributes: SessionID, date, time_start, time_end
