@@ -1,6 +1,6 @@
-CREATE DATABASE FITNESS_MGMT_SYSTEM
+CREATE DATABASE FITNESS_360
 
-USE FITNESS_MGMT_SYSTEM
+USE FITNESS_360
 
 -- Creating the USER table
 CREATE TABLE [USER] (    
@@ -164,7 +164,7 @@ CREATE TABLE COMMUNITY (
     PostDate DATE,
     Achievement VARCHAR(100),
     UserID INT,
-    FOREIGN KEY (UserID) REFERENCES [USER](UserID)
+    FOREIGN KEY (UserID) REFERENCES [USER](UserID) on delete CASCADE,
 );
 
 -- Creating the WORKOUT SESSION table
@@ -196,12 +196,12 @@ Select * from WORKOUT_INFO
 -- STORED PROCEDURES
 
 --Stored Procedure : 1.	Get exercise details based on muscle type
-create procedure [dbo].[GetExerciseDetailsByMuscleTypes] @Muscle_Type varchar(300)
-As
-Select * from Exercise
-Where Muscle_Type = @Muscle_Type
+CREATE PROCEDURE [dbo].[GetExerciseDetailByMuscleTypes] @Muscle_Type varchar(300)
+AS
+SELECT * FROM Exercise
+WHERE Muscle_Type = @Muscle_Type
 
-exec GetExerciseDetailsByMuscleTypes @Muscle_Type = 'Abs'
+EXEC GetExerciseDetailByMuscleTypes @Muscle_TypeÂ =Â 'CHEST'
 
 --Stored Procedure : 2.	Retrieve fitness goals along with associated training plans for a particular user
 
@@ -218,7 +218,7 @@ BEGIN
     WHERE ug.userid = @userId;
 END
 
-Exec GetUsersTrainingPlanExercises @userId = 1001
+EXEC GetUsersTrainingPlanExercises @userId = '1005'
 
 --Stored Procedure : 3.	Get progress report or community posts along with user details!
 
@@ -232,7 +232,7 @@ BEGIN
     WHERE u.UserID = @userId;
 END
 
-EXEC GetUserProgressReport 1002
+EXEC GetUserProgressReport '1002'
 
 --TRIGGER: This trigger updates the Report_Date in the PROGRESS_REPORT table when a new WORKOUT_SESSION is added for a user.
 
@@ -305,6 +305,110 @@ ON EXERCISE (Muscle_Type);
 CREATE NONCLUSTERED INDEX IX_Achievement
 ON Community (Achievement);
 
+-- CONCURRENCY CONTROLS AND PERFORMANCE OPTIMIZATION
+
+CREATE PROCEDURE InsertCommunityPost
+    @Community_ID INT,
+    @Post TEXT,
+    @PostDate DATE,
+    @Achievement VARCHAR(100),
+    @UserID INT
+AS
+BEGIN
+    BEGIN TRY
+        -- Start a transaction
+        BEGIN TRANSACTION;
+
+        -- Check the length of the Post column
+        IF DATALENGTH(@Post) > 300
+        BEGIN
+            -- Rollback the transaction and raise an error
+            RAISERROR('The length of the Post column cannot exceed 300 characters.', 16, 1);
+            ROLLBACK;
+            RETURN;
+        END
+
+        -- Insert the data into the COMMUNITY table
+        INSERT INTO COMMUNITY (Community_ID, Post, PostDate, Achievement, UserID)
+        VALUES (@Community_ID, @Post, @PostDate, @Achievement, @UserID);
+
+        -- Commit the transaction
+        COMMIT;
+    END TRY
+    BEGIN CATCH
+        -- Rollback the transaction in case of an error
+        IF @@TRANCOUNT > 0
+            ROLLBACK;
+
+        -- Propagate the error to the calling application
+        THROW;
+    END CATCH
+END;
+
+
+-- ADDITIONAL UDF
+
+CREATE FUNCTION dbo.ToCategorizeBMI (
+    @Report_BMI DECIMAL(5, 2)
+)
+RETURNS NVARCHAR(50)
+AS
+BEGIN
+    DECLARE @Category NVARCHAR(50);
+
+    IF @Report_BMI < 18.5
+        SET @Category = 'Underweight';
+    ELSE IF @Report_BMI >= 18.5 AND @Report_BMI < 25
+        SET @Category = 'Normal';
+    ELSE IF @Report_BMI >= 25 AND @Report_BMI < 30
+        SET @Category = 'Overweight';
+    ELSE
+        SET @Category = 'Obesity';
+    
+    RETURN @Category;
+END;
+
+SELECT ReportID, Report_BMI, dbo.ToCategorizeBMI(Report_BMI) AS BMI_Category
+FROM PROGRESS_REPORT;
+
+
+-- Create a user-defined function to suggest personalized workouts and recommendations
+CREATE FUNCTION dbo.GeneratePersonalizedWorkoutrecommendations (@UserID INT)
+RETURNS NVARCHAR(500)
+AS
+BEGIN
+    DECLARE @Recommendation NVARCHAR(500);
+
+    -- Identify user's fitness goals and BMI
+    DECLARE @UserBMI DECIMAL(5, 2);
+    SELECT @UserBMI = Report_BMI
+    FROM PROGRESS_REPORT
+    WHERE UserID = @UserID;
+
+    DECLARE @UserGoalType VARCHAR(20);
+    SELECT @UserGoalType = Goal_Type
+    FROM FITNESS_GOALS
+    WHERE UserID = @UserID;
+
+    -- Generate personalized workout recommendation based on BMI and goals
+    SET @Recommendation = 'Here are your personalized workout recommendations based on your goal type (' + @UserGoalType + ') and BMI (' + CAST(@UserBMI AS NVARCHAR(10)) + ').';
+
+    -- Add personalized workout advice or suggestions based on user's goals and BMI
+    IF @UserBMI < 18.5
+        SET @Recommendation = @Recommendation + ' Focus on strength and muscle gain exercises.';
+    ELSE IF @UserBMI >= 18.5 AND @UserBMI < 25
+        SET @Recommendation = @Recommendation + ' Incorporate a balanced mix of cardio and strength training.';
+    ELSE IF @UserBMI >= 25 AND @UserBMI < 30
+        SET @Recommendation = @Recommendation + ' Emphasize more on high-intensity interval training and calorie-burning workouts.';
+    ELSE
+        SET @Recommendation = @Recommendation + ' Prioritize cardio and calorie deficit workouts to manage weight effectively.';
+
+    RETURN @Recommendation;
+END;
+
+DECLARE @WorkoutRecommendation NVARCHAR(500);
+SET @WorkoutRecommendation = dbo.GeneratePersonalizedWorkoutrecommendations('1001');
+SELECT @WorkoutRecommendation AS WorkoutRecommendation;
 
 
 -- DATA ENCRYPTION
