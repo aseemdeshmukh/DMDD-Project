@@ -1,4 +1,4 @@
-USE FITNESS_MGMT_SYSTEM
+USE FITNESS_360
 
 INSERT INTO [USER] (UserID, UserName, UserDOB, UserGender, UserEmailID, UserPhoneNumber)
 VALUES
@@ -48,7 +48,6 @@ VALUES
     (10, 'Strength', '2024-10-01', 1010),
     (11, 'Strength', '2024-11-01', 1011),
     (12, 'Strength', '2024-12-01', 1012);
-
 	
 
 -- Insert values into WEIGHT_LOSS
@@ -86,10 +85,6 @@ VALUES
     (5, 1.9, 'Hypertrophy'),
     (6, 1.75, 'Endurance and Strength');
 			
-
-CREATE NONCLUSTERED INDEX IX_Training_type
-    ON TRAINING_PLAN(Training_Type);
-
 -- Inserting values into the GOAL_TRAINING_PLAN_ASSOCIATION table
 INSERT INTO GOAL_TRAINING_PLAN_ASSOCIATION (Goal_TrainingPlan_ID, TrainingPlan_ID, GoalID)
 VALUES
@@ -106,14 +101,14 @@ VALUES
     (11, 6, 11),
     (12, 6, 12);
 
--- Insert values into EXERCISE
+
 INSERT INTO EXERCISE (Exercise_ID, Exercise_Name, Exercise_Description, Muscle_Type)
 VALUES
     -- Back exercises
     (1, 'Pull-Ups', 'Upper body pulling exercise', 'Back'),
     (2, 'Barbell Rows', 'Strengthens back muscles with weights', 'Back'),
     (3, 'Lat Pulldowns', 'Targets back muscles using a machine', 'Back'),
-    (4, 'Back Extensions', 'Strengthens lower back muscles', 'Back'),
+    (4, 'Rope Pull Down', 'Strengthens lower back muscles', 'Back'),
     (5, 'Deadlift Variations', 'Various deadlift exercises for back', 'Back'),
 
     -- Biceps exercises
@@ -125,7 +120,7 @@ VALUES
 
     -- Chest exercises
     (11, 'Dumbbell Flyes', 'Targets chest muscles with dumbbells', 'Chest'),
-    (12, 'Push-Ups Variations', 'Different variations of push-ups', 'Chest'),
+    (12, 'Incline Chest Press', 'Different variations of push-ups', 'Chest'),
     (13, 'Chest Press Machine', 'Uses a machine for chest muscles', 'Chest'),
     (14, 'Dips', 'Focuses on lower chest and triceps', 'Chest'),
     (15, 'Chest Cable Flyes', 'Works chest muscles using cables', 'Chest'),
@@ -152,103 +147,103 @@ VALUES
     (30, 'Hamstring Curls', 'Works hamstring muscles', 'Legs'),
 
     -- Running variations
-    (31, 'Treadmill Running - Incline', 'Running on a treadmill with elevation', 'Running'),
-    (32, 'Outdoor Running - Uphill', 'Outdoor running on uphill terrain', 'Running'),
-    (33, 'Treadmill Running - Sprint Intervals', 'High-intensity intervals on a treadmill', 'Running'),
-    (34, 'Long Distance Outdoor Running', 'Extended distance running outdoors', 'Running'),
-    (35, 'Trail Running', 'Running on trails with varied terrain', 'Running'),
+    (31, 'Treadmill Running 5 miles - Incline', 'Running on a treadmill with elevation', 'Running'),
+    (32, 'Outdoor Running 5 miles- Uphill', 'Outdoor running on uphill terrain', 'Running'),
+    (33, 'Treadmill Running - Sprint Intervals for 10 mins', 'High-intensity intervals on a treadmill- 15 seconds in Speed 3, 30 seconds in speed 5 or 6 and 15 seconds in speed 8 or 9 ', 'Running'),
+    (34, 'Long Distance Outdoor Running for 8 miles', 'Extended distance running outdoors', 'Running'),
+    (35, 'Trail Running for 2 miles', 'Running on trails with varied terrain', 'Running'),
 
 	-- Abs exercises
 	(36, 'Crunches', 'Basic abdominal exercise targeting rectus abdominis muscles', 'Abs'),
-    (37, 'Plank', 'Core-strengthening exercise that engages multiple muscle groups including abs', 'Abs'),
+    (37, 'Plank for 1 minute', 'Core-strengthening exercise that engages multiple muscle groups including abs', 'Abs'),
     (38, 'Russian Twist', 'Exercise targeting obliques and improving core strength', 'Abs'),
     (39, 'Leg Raises', 'Strengthens lower abdominal muscles', 'Abs'),
     (40, 'Mountain Climbers', 'Full-body exercise engaging core muscles', 'Abs');
 
--- Insert values into WORKOUT_INFO for exercises
+
 INSERT INTO WORKOUT_INFO (workinfo_ID, TrainingPlan_ID, Exercise_ID, Weights, set_s, Repetitions)
 VALUES
-    (1, 1, 31, 0.0, 3, 12),     
-    (2, 1, 32, 0.0, 4, 10),
-	(3, 1, 33, 0.0, 3, 12),     
-    (4, 1, 12, 25.0, 4, 10),
-	(5, 1, 26, 50.0, 3, 12),     
-    (6, 1, 27, 25.0, 4, 10),
-	(7, 1, 36, 50.0, 3, 12),     
-    (8, 1, 37, 25.0, 4, 10),
-	(9, 2, 31, 50.0, 3, 12),     
-    (10, 2, 32, 25.0, 4, 10),
-	(11, 2, 34, 50.0, 3, 12),     
-    (12, 2, 35, 25.0, 4, 10),
-	(13, 2, 36, 50.0, 3, 12),     
-    (14, 2, 38, 25.0, 4, 10),
-	(15, 2, 39, 50.0, 3, 12),     
-    (16, 2, 40, 25.0, 4, 10),
-	(17, 3, 36, 50.0, 3, 12),     
-    (18, 3, 37, 25.0, 4, 10),
-	(19, 3, 38, 50.0, 3, 12),		
-    (20, 3, 39, 25.0, 4, 10),
-	(21, 3, 40, 50.0, 3, 12),     
-    (22, 3, 1, 25.0, 4, 10),
-	(23, 3, 3, 50.0, 3, 12),     
-    (24, 3, 12, 25.0, 4, 10),
-	(25, 3, 22, 50.0, 3, 12),     
-    (26, 3, 26, 25.0, 4, 10),
-	(27, 3, 28, 50.0, 3, 12),     
-    (28, 3, 29, 25.0, 4, 10),
-	(29, 3, 30, 50.0, 3, 12),     
-    (30, 3, 31, 25.0, 4, 10),
-	(31, 4, 1, 50.0, 3, 12),     
-    (32, 4, 2, 25.0, 4, 10),
-	(33, 4, 3, 50.0, 3, 12),     
-    (34, 4, 8, 25.0, 4, 10),
-	(35, 4, 10, 50.0, 3, 12),     
+    (1, 1, 31, 0.0, 0, 0),     
+    (2, 1, 32, 0.0, 0, 0),
+	(3, 1, 33, 0.0, 0, 0),     
+    (4, 1, 12, 30, 3, 10),
+	(5, 1, 26, 0.0, 3, 12),     
+    (6, 1, 27, 90.0, 4, 10),
+	(7, 1, 36, 15.0, 3, 12),     
+    (8, 1, 37, .0, 2, 0),
+	(9, 2, 31, 0.0, 0, 0),     
+    (10, 2, 32, 0.0, 0, 0),
+	(11, 2, 34, 0.0, 0, 0),     
+    (12, 2, 35, 0.0, 0, 0),
+	(13, 2, 36, 20.0, 3, 12),     
+    (14, 2, 38, 15.0, 3, 12),
+	(15, 2, 39, 0.0, 3, 12),     
+    (16, 2, 40, 0.0, 3, 12),
+	(17, 3, 36, 20.0, 3, 12),     
+    (18, 3, 37, 0.0, 3, 0),
+	(19, 3, 38, 20.0, 3, 16),		
+    (20, 3, 39, 5.0, 3, 10),
+	(21, 3, 40, 0.0, 3, 12),     
+    (22, 3, 1, 20.0, 3, 10),
+	(23, 3, 3, 100.0, 3, 12),     
+    (24, 3, 12, 55.0, 3, 12),
+	(25, 3, 22, 60.0, 3, 12),     
+    (26, 3, 26, 180.0, 2, 10),
+	(27, 3, 28, 90.0, 3, 15),     
+    (28, 3, 29, 100.0, 3, 10),
+	(29, 3, 30, 90.0, 3, 12),     
+    (30, 3, 31, 0.0, 0, 0),
+	(31, 4, 1, 20.0, 4, 12),     
+    (32, 4, 2, 90.0, 3, 12),
+	(33, 4, 3, 120.0, 3, 12),     
+    (34, 4, 8, 0, 2, 10),
+	(35, 4, 10, 30.0, 3, 12),     
     (36, 4, 11, 25.0, 4, 10),
-	(37, 4, 12, 50.0, 3, 12),     
-    (38, 4, 13, 25.0, 4, 10),
-	(39, 4, 14, 50.0, 3, 12),     
+	(37, 4, 12, 60.0, 3, 12),     
+    (38, 4, 13, 125.0, 4, 12),
+	(39, 4, 14, 35.0, 3, 12),     
     (40, 4, 17, 25.0, 4, 10),
-	(41, 4, 18, 25.0, 4, 10),
-	(42, 4, 24, 25.0, 4, 10),
-	(43, 4, 25, 25.0, 4, 10),
-	(44, 4, 27, 25.0, 4, 10),
-	(45, 4, 28, 25.0, 4, 10),
-	(46, 4, 29, 25.0, 4, 10),
-	(47, 4, 36, 25.0, 4, 10),
-	(48, 4, 37, 25.0, 4, 10),
-	(48, 4, 38, 25.0, 4, 10),
-	(48, 4, 39, 25.0, 4, 10),
-	(49, 5, 3, 25.0, 4, 10),
-	(50, 5, 4, 25.0, 4, 10),
-	(51, 5, 5, 25.0, 4, 10),
-	(52, 5, 11, 25.0, 4, 10),
-	(53, 5, 13, 25.0, 4, 10),
-	(54, 5, 15, 25.0, 4, 10),
-	(55, 5, 21, 25.0, 4, 10),
-	(56, 5, 22, 25.0, 4, 10),
-	(57, 5, 23, 25.0, 4, 10),
-	(58, 5, 26, 25.0, 4, 10),
-	(59, 5, 28, 25.0, 4, 10),
-	(60, 5, 30, 25.0, 4, 10),
-	(61, 6, 2, 25.0, 4, 10),
-	(62, 6, 3, 25.0, 4, 10),
-	(63, 6, 4, 25.0, 4, 10),
-	(64, 6, 5, 25.0, 4, 10),
-	(65, 6, 6, 25.0, 4, 10),
-	(66, 6, 7, 25.0, 4, 10),
-	(67, 6, 12, 25.0, 4, 10),
-	(68, 6, 13, 25.0, 4, 10),
-	(69, 6, 14, 25.0, 4, 10),
-	(70, 6, 15, 25.0, 4, 10),
-	(71, 6, 19, 25.0, 4, 10),
-	(72, 6, 20, 25.0, 4, 10),
-	(73, 6, 21, 25.0, 4, 10),
-	(74, 6, 22, 25.0, 4, 10),
-	(75, 6, 24, 25.0, 4, 10),
-	(75, 6, 26, 25.0, 4, 10),
-	(75, 6, 28, 25.0, 4, 10),
-	(75, 6, 29, 25.0, 4, 10),
-	(75, 6, 30, 25.0, 4, 10);
+	(41, 4, 18, 47.5, 4, 10),
+	(42, 4, 24, 40.0, 2, 15),
+	(43, 4, 25, 25.0, 4, 12),
+	(44, 4, 27, 180.0, 4, 12),
+	(45, 4, 28, 115.0, 3, 10),
+	(46, 4, 29, 130.0, 3, 10),
+	(47, 4, 36, 10.0, 3, 10),
+	(48, 4, 37, 0.0, 1, 10),
+	(48, 4, 38, 15.0, 4, 10),
+	(48, 4, 39, 0.0, 3, 10),
+	(49, 5, 3, 120.0, 4, 12),
+	(50, 5, 4, 60.0, 4, 12),
+	(51, 5, 5, 135.0, 4, 12),
+	(52, 5, 11, 25.0, 4, 12),
+	(53, 5, 12, 55.0, 4, 12),
+	(54, 5, 13, 135.0, 4, 12),
+	(55, 5, 21, 15.0, 4, 12),
+	(56, 5, 22, 45.0, 4, 12),
+	(57, 5, 23, 15.0, 4, 12),
+	(58, 5, 26, 135.0, 4, 12),
+	(59, 5, 28, 115.0, 4, 12),
+	(60, 5, 30, 115.0, 4, 12),
+	(61, 6, 2, 70.0, 3, 8),
+	(62, 6, 3, 140.0, 3, 10),
+	(63, 6, 4, 80.0, 4, 12),
+	(64, 6, 5, 200.0, 6, 5),
+	(65, 6, 6, 40.0, 3, 8),
+	(66, 6, 7, 100.0, 3, 6),
+	(67, 6, 12, 90.0, 3, 6),
+	(68, 6, 13, 180.0, 4, 6),
+	(69, 6, 14, 50.0, 4, 10),
+	(70, 6, 15, 100.0, 4, 6),
+	(71, 6, 19, 70.0, 4, 8),
+	(72, 6, 20, 50.0, 3, 10),
+	(73, 6, 21, 25.0, 3, 6),
+	(74, 6, 22,	60.0, 4, 8),
+	(75, 6, 24, 70.0, 3, 8),
+	(75, 6, 26, 0.0, 4, 8),
+	(75, 6, 28, 180.0, 3, 8),
+	(75, 6, 29, 180.0, 4, 5),
+	(75, 6, 30, 150.0, 3, 8);
     
 INSERT INTO DIET_PLAN(Diet_Plan_ID, PlanName, PlanDescription)
 VALUES
